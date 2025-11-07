@@ -1,0 +1,219 @@
+#!/usr/bin/env bash
+#
+# @(#) fedora-compiler-alternatives
+#
+# This script configures GCC and G++ version alternatives on Fedora.
+#
+# All versions of interest are assumed to be installed, including
+# system default versions. System default versions are installed
+# without version suffixes, so those need to be renamed first.
+#
+# After running this script, if a new version is added to
+# ALTERNATIVE_COMPILER_VERSIONS, it should be safe to run this script
+# again, i.e., it tries to be idempotent with respect to previous
+# changes.
+#
+# Set these! Integers only!
+: ${DEFAULT_COMPILER_VERSION:=15}
+: ${ALTERNATIVE_COMPILER_VERSIONS:='14'}
+
+: ${AWK_CMD:='/usr/bin/gawk'}
+: ${CMP_CMD:='/bin/cmp'}
+: ${CP_CMD:='/bin/cp'}
+: ${FILE_CMD:='/usr/bin/file'}
+: ${GCC_CMD:='/usr/bin/gcc'}
+: ${GPP_CMD:='/usr/bin/g++'}
+: ${GFORTRAN_CMD:='/usr/bin/gfortran'}
+: ${LN_CMD:='/bin/ln'}
+: ${MV_CMD:='/bin/mv'}
+: ${RM_CMD:='/bin/rm'}
+: ${SED_CMD:='/usr/bin/sed'}
+: ${UPDATE_ALTERNATIVES_CMD:='/usr/bin/update-alternatives'}
+
+cc-alternatives ()
+{
+    $RM_CMD -f /usr/bin/cc
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                            \
+        --install  /usr/bin/cc                      cc                       /usr/bin/gcc                                 20
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                            \
+        --install  /usr/bin/cc                      clang                    /usr/bin/clang                               10
+}
+
+cpp-alternatives ()
+{
+    $RM_CMD -f /usr/bin/c++
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                            \
+        --install  /usr/bin/c++                     c++                      /usr/bin/g++                                 20
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                            \
+        --install  /usr/bin/c++                     clang++                  /usr/bin/clang++                             10
+}
+
+gcc-alternative ()
+{
+    local version=$1
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                            \
+        --install  /usr/bin/gcc                     gcc                      /usr/bin/gcc-"${version}"                    "$version"    \
+        --follower /usr/bin/cpp                     cpp                      /usr/bin/cpp-"${version}"                                  \
+        --follower /usr/bin/gcc-ar                  gcc-ar                   /usr/bin/gcc-ar-"${version}"                               \
+        --follower /usr/bin/gcc-nm                  gcc-nm                   /usr/bin/gcc-nm-"${version}"                               \
+        --follower /usr/bin/gcc-ranlib              gcc-ranlib               /usr/bin/gcc-ranlib-"${version}"                           \
+        --follower /usr/bin/gcov                    gcov                     /usr/bin/gcov-"${version}"                                 \
+        --follower /usr/bin/gcov-dump               gcov-dump                /usr/bin/gcov-dump-"${version}"                            \
+        --follower /usr/bin/gcov-tool               gcov-tool                /usr/bin/gcov-tool-"${version}"                            \
+        --follower /usr/bin/lto-dump                lto-dump                 /usr/bin/lto-dump-"${version}"
+}
+
+default-gcc-alternative ()
+{
+    local version=$1
+
+    local maybe_symlink=''
+
+    maybe_symlink=$($FILE_CMD /usr/bin/gcc | $AWK_CMD '{ print $NF }') || true
+
+    case "$maybe_symlink" in
+        /etc/alternatives/*)
+            : # Nothing to do
+            ;;
+        *)
+            $MV_CMD -f /usr/bin/cpp{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/gcc{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/gcc-ar{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/gcc-nm{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/gcc-ranlib{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/gcov{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/gcov-dump{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/gcov-tool{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/lto-dump{,-"${version}"} || return $?
+            ;;
+    esac
+
+    gcc-alternative "$version"
+}
+
+gpp-alternative ()
+{
+    local version=$1
+
+    if ! command -v c++-"${version}" >/dev/null; then
+        $CP_CMD /usr/bin/{g,c}++-"${version}" || return $?
+    fi
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                            \
+        --install  /usr/bin/g++                     g++                     /usr/bin/g++-"${version}"                     "$version"
+}
+
+default-gpp-alternative ()
+{
+    local version=$1
+
+    local maybe_symlink=''
+
+    maybe_symlink=$(
+        $FILE_CMD "$GPP_CMD" |
+            $AWK_CMD '{ print $NF }'
+                 ) || true
+
+    case "$maybe_symlink" in
+        /etc/alternatives/*)
+            : # Nothing to do
+            ;;
+        *)
+            $MV_CMD -f /usr/bin/c++{,-"${version}"} || return $?
+            $MV_CMD -f /usr/bin/g++{,-"${version}"} || return $?
+            ;;
+    esac
+
+    gpp-alternative "$version"
+}
+
+gfortran-alternative ()
+{
+    local version=$1
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                            \
+        --install  /usr/bin/gfortran                gfortran                /usr/bin/gfortran-"${version}"                "$version"
+}
+
+default-gfortran-alternative ()
+{
+    local version=$1
+
+    local maybe_symlink=''
+
+    maybe_symlink=$(
+        $FILE_CMD "$GFORTRAN_CMD" |
+            $AWK_CMD '{ print $NF }'
+                 ) || true
+
+    case "$maybe_symlink" in
+        /etc/alternatives/*)
+            : # Nothing to do
+            ;;
+        *)
+            $MV_CMD -f /usr/bin/gfortran{,-"${version}"} || return $?
+            ;;
+    esac
+
+    gfortran-alternative "$version"
+}
+
+if test ."$0" = ."${BASH_SOURCE[0]}"; then
+    if (( EUID != 0 )); then
+        echo "${0##*/}: This script must be run by user root."
+        exit 1
+    fi
+
+    cc-alternatives
+    cpp-alternatives
+
+    declare default_version=''
+
+    default_version=$(
+        $GCC_CMD --version 2>/dev/null |
+            $SED_CMD -Ene '/[^0-9]*([0-9]+)\..*/{s//\1/p;q}'
+                   ) || exit $?
+
+    if (( default_version == DEFAULT_COMPILER_VERSION )); then
+        default-gcc-alternative "$DEFAULT_COMPILER_VERSION" || exit $?
+    fi
+
+    default_version=$(
+        $GPP_CMD --version 2>/dev/null |
+            $SED_CMD -Ene '/[^0-9]*([0-9]+)\..*/{s//\1/p;q}'
+                   ) || exit $?
+
+    if (( default_version == DEFAULT_COMPILER_VERSION )); then
+        default-gpp-alternative "$DEFAULT_COMPILER_VERSION" || exit $?
+    fi
+
+    default_version=$(
+        $GFORTRAN_CMD 2>/dev/null --version |
+            $SED_CMD -Ene '/[^0-9]*([0-9]+)\..*/{s//\1/p;q}'
+                   ) || exit $?
+
+    if (( default_version == DEFAULT_COMPILER_VERSION )); then
+        default-gfortran-alternative "$DEFAULT_COMPILER_VERSION" || exit $?
+    fi
+
+    declare version=''
+
+    for version in $ALTERNATIVE_COMPILER_VERSIONS; do
+        if command -v gcc-"${version}" >/dev/null; then
+            gcc-alternative "$version" || exit $?
+        fi
+
+        if command -v g++-"${version}" >/dev/null; then
+            gpp-alternative "$version" || exit $?
+        fi
+
+        if command -v gfortran-"${version}" >/dev/null; then
+            gfortran-alternative "$version" || exit $?
+        fi
+    done
+fi

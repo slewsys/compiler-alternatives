@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+#
+# @(#) debian-compiler-alternatives
+#
+# This script configures GCC and G++ version alternatives on Debian.
+#
+# All versions of interest are assumed to be installed, including
+# system default versions. System default versions are installed as
+# direct symlinks, so those need to be relinked first.
+#
+# After running this script, if a new version is added to
+# ALTERNATIVE_COMPILER_VERSIONS, it should be safe to run this script
+# again, i.e., it tries to be idempotent with respect to previous
+# changes.
+#
+# Set these! Integers only!
+: ${DEFAULT_COMPILER_VERSION:=14}
+: ${ALTERNATIVE_COMPILER_VERSIONS:='13'}
+
+: ${AWK_CMD:='/usr/bin/gawk'}
+: ${CP_CMD:='/bin/cp'}
+: ${FILE_CMD:='/usr/bin/file'}
+: ${GREP_CMD:='/usr/bin/grep'}
+: ${LN_CMD:='/bin/ln'}
+: ${MV_CMD:='/bin/mv'}
+: ${RM_CMD:='/bin/rm'}
+: ${UPDATE_ALTERNATIVES_CMD:='/usr/bin/update-alternatives'}
+
+gcc-alternative ()
+{
+    local version=$1
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                       \
+        --install /usr/bin/x86_64-linux-gnu-gcc      gcc         /usr/bin/x86_64-linux-gnu-gcc-"${version}"        "$version"      \
+        --slave /usr/bin/x86_64-linux-gnu-cpp        cpp         /usr/bin/x86_64-linux-gnu-cpp-"${version}"                        \
+        --slave /usr/bin/x86_64-linux-gnu-gcc-ar     gcc-ar      /usr/bin/x86_64-linux-gnu-gcc-ar-"${version}"                     \
+        --slave /usr/bin/x86_64-linux-gnu-gcc-nm     gcc-nm      /usr/bin/x86_64-linux-gnu-gcc-nm-"${version}"                     \
+        --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib gcc-ranlib  /usr/bin/x86_64-linux-gnu-gcc-ranlib-"${version}"                 \
+        --slave /usr/bin/x86_64-linux-gnu-gcov       gcov        /usr/bin/x86_64-linux-gnu-gcov-"${version}"                       \
+        --slave /usr/bin/x86_64-linux-gnu-gcov-dump  gcov-dump   /usr/bin/x86_64-linux-gnu-gcov-dump-"${version}"                  \
+        --slave /usr/bin/x86_64-linux-gnu-gcov-tool  gcov-tool   /usr/bin/x86_64-linux-gnu-gcov-tool-"${version}"                  \
+        --slave /usr/bin/x86_64-linux-gnu-lto-dump   lto-dump    /usr/bin/x86_64-linux-gnu-lto-dump-"${version}"
+}
+
+default-gcc-alternative ()
+{
+    local version=$1
+
+    local maybe_symlink=''
+
+    maybe_symlink=$($FILE_CMD /usr/bin/x86_64-linux-gnu-gcc | $AWK_CMD '{ print $NF }') || true
+
+    case "$maybe_symlink" in
+        /etc/alternatives/*)
+            : # Nothing to do
+            ;;
+        *)
+            $LN_CMD -sf x86_64-linux-gnu-cpp /usr/bin/cpp || return $?
+            $LN_CMD -sf x86_64-linux-gnu-gcc /usr/bin/gcc || return $?
+            $LN_CMD -sf x86_64-linux-gnu-gcc-ar /usr/bin/gcc-ar || return $?
+            $LN_CMD -sf x86_64-linux-gnu-gcc-nm /usr/bin/gcc-nm || return $?
+            $LN_CMD -sf x86_64-linux-gnu-gcc-ranlib /usr/bin/gcc-ranlib || return $?
+            $LN_CMD -sf x86_64-linux-gnu-gcov /usr/bin/gcov || return $?
+            $LN_CMD -sf x86_64-linux-gnu-gcov-dump /usr/bin/gcov-dump || return $?
+            $LN_CMD -sf x86_64-linux-gnu-gcov-tool /usr/bin/gcov-tool || return $?
+            $LN_CMD -sf x86_64-linux-gnu-lto-dump /usr/bin/lto-dump || return $?
+
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-cpp || return $?
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-gcc || return $?
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-gcc-ar || return $?
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-gcc-nm || return $?
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-gcc-ranlib || return $?
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-gcov || return $?
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-gcov-dump || return $?
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-gcov-tool || return $?
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-lto-dump || return $?
+            ;;
+    esac
+
+    gcc-alternative "$version"
+}
+
+gpp-alternative ()
+{
+    local version=$1
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                       \
+        --install /usr/bin/x86_64-linux-gnu-g++      g++         /usr/bin/x86_64-linux-gnu-g++-"${version}"        "$version"
+}
+
+default-gpp-alternative ()
+{
+    local version=$1
+
+    local maybe_symlink=''
+
+    maybe_symlink=$($FILE_CMD /usr/bin/x86_64-linux-gnu-g++ | $AWK_CMD '{ print $NF }') || true
+
+    case "$maybe_symlink" in
+        /etc/alternatives/*)
+            : # Nothing to do
+            ;;
+        *)
+            $LN_CMD -sf x86_64-linux-gnu-g++ /usr/bin/g++  || return $?
+
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-g++ || return $?
+            ;;
+    esac
+
+    gpp-alternative "$version"
+}
+
+
+gfortran-alternative ()
+{
+    local version=$1
+
+    $UPDATE_ALTERNATIVES_CMD                                                                                                       \
+        --install /usr/bin/x86_64-linux-gnu-gfortran gfortran    /usr/bin/x86_64-linux-gnu-gfortran-"${version}"   "$version"
+}
+
+default-gfortran-alternative ()
+{
+    local version=$1
+
+    local maybe_symlink=''
+
+    maybe_symlink=$($FILE_CMD /usr/bin/x86_64-linux-gnu-gfortran | $AWK_CMD '{ print $NF }') || true
+
+    case "$maybe_symlink" in
+        /etc/alternatives/*)
+            : # Nothing to do
+            ;;
+        *)
+            $LN_CMD -sf x86_64-linux-gnu-gfortran /usr/bin/gfortran  || return $?
+
+            $RM_CMD -f /usr/bin/x86_64-linux-gnu-gfortran || return $?
+            ;;
+    esac
+
+    gfortran-alternative "$version"
+}
+
+if test ."$0" = ."${BASH_SOURCE[0]}"; then
+    if (( EUID != 0 )); then
+        echo "${0##*/}: This script must be run by user root."
+        exit 1
+    fi
+
+    # Remove any cpp group so that cpp can be a follower of gcc.
+    if $UPDATE_ALTERNATIVES_CMD --get-selections |
+        $AWK_CMD '{ print $1 }' |
+        $GREP_CMD -q cpp; then
+        $UPDATE_ALTERNATIVES_CMD --remove-all cpp
+    fi
+
+    if command -v x86_64-linux-gnu-gcc-"${DEFAULT_COMPILER_VERSION}" >/dev/null; then
+        default-gcc-alternative "$DEFAULT_COMPILER_VERSION" || exit $?
+    fi
+
+    if command -v x86_64-linux-gnu-g++-"${DEFAULT_COMPILER_VERSION}" >/dev/null; then
+        default-gpp-alternative "$DEFAULT_COMPILER_VERSION" || exit $?
+    fi
+
+    if command -v x86_64-linux-gnu-gfortran-"${DEFAULT_COMPILER_VERSION}" >/dev/null; then
+        default-gfortran-alternative "$DEFAULT_COMPILER_VERSION" || exit $?
+    fi
+
+    declare version=''
+
+    for version in $ALTERNATIVE_COMPILER_VERSIONS; do
+        if command -v x86_64-linux-gnu-gcc-"${version}" >/dev/null; then
+            gcc-alternative "$version" || exit $?
+        fi
+
+        if command -v x86_64-linux-gnu-g++-"${version}" >/dev/null; then
+            gpp-alternative "$version" || exit $?
+        fi
+
+        if command -v x86_64-linux-gnu-gfortran-"${version}" >/dev/null; then
+            gfortran-alternative "$version" || exit $?
+        fi
+    done
+fi
