@@ -31,15 +31,15 @@ gcc-alternative ()
     local version=$1
 
     $UPDATE_ALTERNATIVES_CMD                                                                                                       \
-        --install /usr/bin/x86_64-linux-gnu-gcc      gcc         /usr/bin/x86_64-linux-gnu-gcc-"${version}"        "$version"      \
-        --slave /usr/bin/x86_64-linux-gnu-cpp        cpp         /usr/bin/x86_64-linux-gnu-cpp-"${version}"                        \
-        --slave /usr/bin/x86_64-linux-gnu-gcc-ar     gcc-ar      /usr/bin/x86_64-linux-gnu-gcc-ar-"${version}"                     \
-        --slave /usr/bin/x86_64-linux-gnu-gcc-nm     gcc-nm      /usr/bin/x86_64-linux-gnu-gcc-nm-"${version}"                     \
-        --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib gcc-ranlib  /usr/bin/x86_64-linux-gnu-gcc-ranlib-"${version}"                 \
-        --slave /usr/bin/x86_64-linux-gnu-gcov       gcov        /usr/bin/x86_64-linux-gnu-gcov-"${version}"                       \
-        --slave /usr/bin/x86_64-linux-gnu-gcov-dump  gcov-dump   /usr/bin/x86_64-linux-gnu-gcov-dump-"${version}"                  \
-        --slave /usr/bin/x86_64-linux-gnu-gcov-tool  gcov-tool   /usr/bin/x86_64-linux-gnu-gcov-tool-"${version}"                  \
-        --slave /usr/bin/x86_64-linux-gnu-lto-dump   lto-dump    /usr/bin/x86_64-linux-gnu-lto-dump-"${version}"
+        --install /usr/bin/x86_64-linux-gnu-gcc      gcc         "/usr/bin/x86_64-linux-gnu-gcc-${version}"        "$version"      \
+        --slave /usr/bin/x86_64-linux-gnu-cpp        cpp         "/usr/bin/x86_64-linux-gnu-cpp-${version}"                        \
+        --slave /usr/bin/x86_64-linux-gnu-gcc-ar     gcc-ar      "/usr/bin/x86_64-linux-gnu-gcc-ar-${version}"                     \
+        --slave /usr/bin/x86_64-linux-gnu-gcc-nm     gcc-nm      "/usr/bin/x86_64-linux-gnu-gcc-nm-${version}"                     \
+        --slave /usr/bin/x86_64-linux-gnu-gcc-ranlib gcc-ranlib  "/usr/bin/x86_64-linux-gnu-gcc-ranlib-${version}"                 \
+        --slave /usr/bin/x86_64-linux-gnu-gcov       gcov        "/usr/bin/x86_64-linux-gnu-gcov-${version}"                       \
+        --slave /usr/bin/x86_64-linux-gnu-gcov-dump  gcov-dump   "/usr/bin/x86_64-linux-gnu-gcov-dump-${version}"                  \
+        --slave /usr/bin/x86_64-linux-gnu-gcov-tool  gcov-tool   "/usr/bin/x86_64-linux-gnu-gcov-tool-${version}"                  \
+        --slave /usr/bin/x86_64-linux-gnu-lto-dump   lto-dump    "/usr/bin/x86_64-linux-gnu-lto-dump-${version}"
 }
 
 default-gcc-alternative ()
@@ -48,7 +48,10 @@ default-gcc-alternative ()
 
     local maybe_symlink=''
 
-    maybe_symlink=$($FILE_CMD /usr/bin/x86_64-linux-gnu-gcc | $AWK_CMD '{ print $NF }') || true
+    maybe_symlink=$(
+        $FILE_CMD /usr/bin/x86_64-linux-gnu-gcc |
+            $AWK_CMD '{ print $NF }'
+                 ) || true
 
     case "$maybe_symlink" in
         /etc/alternatives/*)
@@ -94,7 +97,10 @@ default-gpp-alternative ()
 
     local maybe_symlink=''
 
-    maybe_symlink=$($FILE_CMD /usr/bin/x86_64-linux-gnu-g++ | $AWK_CMD '{ print $NF }') || true
+    maybe_symlink=$(
+        $FILE_CMD /usr/bin/x86_64-linux-gnu-g++ |
+            $AWK_CMD '{ print $NF }'
+                 ) || true
 
     case "$maybe_symlink" in
         /etc/alternatives/*)
@@ -125,7 +131,10 @@ default-gfortran-alternative ()
 
     local maybe_symlink=''
 
-    maybe_symlink=$($FILE_CMD /usr/bin/x86_64-linux-gnu-gfortran | $AWK_CMD '{ print $NF }') || true
+    maybe_symlink=$(
+        $FILE_CMD /usr/bin/x86_64-linux-gnu-gfortran |
+            $AWK_CMD '{ print $NF }'
+                 ) || true
 
     case "$maybe_symlink" in
         /etc/alternatives/*)
