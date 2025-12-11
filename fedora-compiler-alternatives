@@ -51,26 +51,57 @@ gcc-alternative ()
     local version=$1
 
     if test -f "/usr/bin/gcc-${version}" -a ! -h "/usr/bin/gcc-${version}"; then
-        $MV_CMD -f "/usr/bin/cpp-${version}" "/usr/bin/x86_64-linux-gnu-cpp-${version}" || return $?
-        $MV_CMD -f "/usr/bin/gcc-${version}" "/usr/bin/x86_64-linux-gnu-gcc-${version}" || return $?
-        $MV_CMD -f "/usr/bin/gcc-ar-${version}" "/usr/bin/x86_64-linux-gnu-gcc-ar-${version}" || return $?
-        $MV_CMD -f "/usr/bin/gcc-nm-${version}" "/usr/bin/x86_64-linux-gnu-gcc-nm-${version}" || return $?
-        $MV_CMD -f "/usr/bin/gcc-ranlib-${version}" "/usr/bin/x86_64-linux-gnu-gcc-ranlib-${version}" || return $?
-        $MV_CMD -f "/usr/bin/gcov-${version}" "/usr/bin/x86_64-linux-gnu-gcov-${version}" || return $?
-        $MV_CMD -f "/usr/bin/gcov-dump-${version}" "/usr/bin/x86_64-linux-gnu-gcov-dump-${version}" || return $?
-        $MV_CMD -f "/usr/bin/gcov-tool-${version}" "/usr/bin/x86_64-linux-gnu-gcov-tool-${version}" || return $?
-        $MV_CMD -f "/usr/bin/lto-dump-${version}" "/usr/bin/x86_64-linux-gnu-lto-dump-${version}" || return $?
+        command -v "/usr/bin/cpp-${version}" >/dev/null && $CP_CMD -a "/usr/bin/cpp-${version}" "/usr/bin/x86_64-linux-gnu-cpp-${version}" || return $?
+        command -v "/usr/bin/gcc-${version}" >/dev/null && $CP_CMD -a "/usr/bin/gcc-${version}" "/usr/bin/x86_64-linux-gnu-gcc-${version}" || return $?
+        command -v "/usr/bin/gcc-ar-${version}" >/dev/null && $CP_CMD -a "/usr/bin/gcc-ar-${version}" "/usr/bin/x86_64-linux-gnu-gcc-ar-${version}" || return $?
+        command -v "/usr/bin/gcc-nm-${version}" >/dev/null && $CP_CMD -a "/usr/bin/gcc-nm-${version}" "/usr/bin/x86_64-linux-gnu-gcc-nm-${version}" || return $?
+        command -v "/usr/bin/gcc-ranlib-${version}" >/dev/null && $CP_CMD -a "/usr/bin/gcc-ranlib-${version}" "/usr/bin/x86_64-linux-gnu-gcc-ranlib-${version}" || return $?
+        command -v "/usr/bin/gcov-${version}" >/dev/null && $CP_CMD -a "/usr/bin/gcov-${version}" "/usr/bin/x86_64-linux-gnu-gcov-${version}" || return $?
+        command -v "/usr/bin/gcov-dump-${version}" >/dev/null && $CP_CMD -a "/usr/bin/gcov-dump-${version}" "/usr/bin/x86_64-linux-gnu-gcov-dump-${version}" || return $?
+        command -v "/usr/bin/gcov-tool-${version}" >/dev/null && $CP_CMD -a "/usr/bin/gcov-tool-${version}" "/usr/bin/x86_64-linux-gnu-gcov-tool-${version}" || return $?
+        command -v "/usr/bin/lto-dump-${version}" >/dev/null && $CP_CMD -a "/usr/bin/lto-dump-${version}" "/usr/bin/x86_64-linux-gnu-lto-dump-${version}" || return $?
 
-        $MV_CMD -f "/usr/share/man/man1/cpp-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-cpp-${version}.1.gz" || return $?
-        $MV_CMD -f "/usr/share/man/man1/gcc-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcc-${version}.1.gz" || return $?
-        $MV_CMD -f "/usr/share/man/man1/gcc-ar-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcc-ar-${version}.1.gz" || return $?
-        $MV_CMD -f "/usr/share/man/man1/gcc-nm-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcc-nm-${version}.1.gz" || return $?
-        $MV_CMD -f "/usr/share/man/man1/gcc-ranlib-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcc-ranlib-${version}.1.gz" || return $?
-        $MV_CMD -f "/usr/share/man/man1/gcov-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcov-${version}.1.gz" || return $?
-        $MV_CMD -f "/usr/share/man/man1/gcov-dump-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcov-dump-${version}.1.gz" || return $?
-        $MV_CMD -f "/usr/share/man/man1/gcov-tool-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcov-tool-${version}.1.gz" || return $?
-        $MV_CMD -f "/usr/share/man/man1/lto-dump-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-lto-dump-${version}.1.gz" || return $?
-    fi
+        $LN_CMD -sf "x86_64-linux-gnu-cpp-${version}" "/usr/bin/cpp-${version}" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcc-${version}" "/usr/bin/gcc-${version}" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcc-ar-${version}" "/usr/bin/gcc-ar-${version}" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcc-nm-${version}" "/usr/bin/gcc-nm-${version}" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcc-ranlib-${version}" "/usr/bin/gcc-ranlib-${version}" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcov-${version}" "/usr/bin/gcov-${version}" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcov-dump-${version}" "/usr/bin/gcov-dump-${version}" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcov-tool-${version}" "/usr/bin/gcov-tool-${version}" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-lto-dump-${version}" "/usr/bin/lto-dump-${version}" || return $?
+
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-cpp-${version}" || return $?
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-gcc-${version}" || return $?
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-gcc-ar-${version}" || return $?
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-gcc-nm-${version}" || return $?
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-gcc-ranlib-${version}" || return $?
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-gcov-${version}" || return $?
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-gcov-dump-${version}" || return $?
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-gcov-tool-${version}" || return $?
+        $RM_CMD -f "/usr/bin/x86_64-linux-gnu-lto-dump-${version}" || return $?
+
+        test -f "/usr/share/man/man1/cpp-${version}.1.gz" && $CP_CMD -a "/usr/share/man/man1/cpp-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-cpp-${version}.1.gz" || return $?
+        test -f "/usr/share/man/man1/gcc-${version}.1.gz" && $CP_CMD -a "/usr/share/man/man1/gcc-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcc-${version}.1.gz" || return $?
+        test -f "/usr/share/man/man1/gcov-${version}.1.gz" && $CP_CMD -a "/usr/share/man/man1/gcov-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcov-${version}.1.gz" || return $?
+        test -f "/usr/share/man/man1/gcov-dump-${version}.1.gz" && $CP_CMD -a "/usr/share/man/man1/gcov-dump-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcov-dump-${version}.1.gz" || return $?
+        test -f "/usr/share/man/man1/gcov-tool-${version}.1.gz" && $CP_CMD -a "/usr/share/man/man1/gcov-tool-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gcov-tool-${version}.1.gz" || return $?
+        test -f "/usr/share/man/man1/lto-dump-${version}.1.gz" && $CP_CMD -a "/usr/share/man/man1/lto-dump-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-lto-dump-${version}.1.gz" || return $?
+
+        $LN_CMD -sf "x86_64-linux-gnu-cpp-${version}.1.gz" "/usr/share/man/man1/cpp-${version}.1.gz" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcc-${version}.1.gz" "/usr/share/man/man1/gcc-${version}.1.gz" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcov-${version}.1.gz" "/usr/share/man/man1/gcov-${version}.1.gz" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcov-dump-${version}.1.gz" "/usr/share/man/man1/gcov-dump-${version}.1.gz" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-gcov-tool-${version}.1.gz" "/usr/share/man/man1/gcov-tool-${version}.1.gz" || return $?
+        $LN_CMD -sf "x86_64-linux-gnu-lto-dump-${version}.1.gz" "/usr/share/man/man1/lto-dump-${version}.1.gz" || return $?
+
+        $RM_CMD -f "/usr/share/man/man1/x86_64-linux-gnu-cpp-${version}.1.gz" || return $?
+        $RM_CMD -f "/usr/share/man/man1/x86_64-linux-gnu-gcc-${version}.1.gz" || return $?
+        $RM_CMD -f "/usr/share/man/man1/x86_64-linux-gnu-gcov-${version}.1.gz" || return $?
+        $RM_CMD -f "/usr/share/man/man1/x86_64-linux-gnu-gcov-dump-${version}.1.gz" || return $?
+        $RM_CMD -f "/usr/share/man/man1/x86_64-linux-gnu-gcov-tool-${version}.1.gz" || return $?
+        $RM_CMD -f "/usr/share/man/man1/x86_64-linux-gnu-lto-dump-${version}.1.gz" || return $?
+   fi
 
     $UPDATE_ALTERNATIVES_CMD                                                                                                                    \
         --install  /usr/bin/x86_64-linux-gnu-gcc              gcc          /usr/bin/x86_64-linux-gnu-gcc-"${version}"            "$version"     \
@@ -83,11 +114,8 @@ gcc-alternative ()
         --follower /usr/bin/x86_64-linux-gnu-gcov-tool        gcov-tool    /usr/bin/x86_64-linux-gnu-gcov-tool-"${version}"                     \
         --follower /usr/bin/x86_64-linux-gnu-lto-dump         lto-dump     /usr/bin/x86_64-linux-gnu-lto-dump-"${version}"                      \
                                                                                                                                                 \
-        --install  /usr/bin/x86_64-linux-gnu-gcc.1.gz         gcc.1        /usr/bin/x86_64-linux-gnu-gcc-"${version}.1.gz"                      \
+        --follower  /usr/bin/x86_64-linux-gnu-gcc.1.gz        gcc.1        /usr/bin/x86_64-linux-gnu-gcc-"${version}.1.gz"                      \
         --follower /usr/bin/x86_64-linux-gnu-cpp.1.gz         cpp.1        /usr/bin/x86_64-linux-gnu-cpp-"${version}.1.gz"                      \
-        --follower /usr/bin/x86_64-linux-gnu-gcc-ar.1.gz      gcc-ar.1     /usr/bin/x86_64-linux-gnu-gcc-ar-"${version}.1.gz"                   \
-        --follower /usr/bin/x86_64-linux-gnu-gcc-nm.1.gz      gcc-nm.1     /usr/bin/x86_64-linux-gnu-gcc-nm-"${version}.1.gz"                   \
-        --follower /usr/bin/x86_64-linux-gnu-gcc-ranlib.1.gz  gcc-ranlib.1 /usr/bin/x86_64-linux-gnu-gcc-ranlib-"${version}.1.gz"               \
         --follower /usr/bin/x86_64-linux-gnu-gcov.1.gz        gcov.1       /usr/bin/x86_64-linux-gnu-gcov-"${version}.1.gz"                     \
         --follower /usr/bin/x86_64-linux-gnu-gcov-dump.1.gz   gcov-dump.1  /usr/bin/x86_64-linux-gnu-gcov-dump-"${version}.1.gz"                \
         --follower /usr/bin/x86_64-linux-gnu-gcov-tool.1.gz   gcov-tool.1  /usr/bin/x86_64-linux-gnu-gcov-tool-"${version}.1.gz"                \
@@ -99,15 +127,15 @@ default-gcc-alternative ()
     local version=$1
 
     if test -f /usr/bin/gcc -a ! -h /usr/bin/gcc; then
-        $MV_CMD -f /usr/bin/cpp "/usr/bin/x86_64-linux-gnu-cpp-${version}" || return $?
-        $MV_CMD -f /usr/bin/gcc "/usr/bin/x86_64-linux-gnu-gcc-${version}" || return $?
-        $MV_CMD -f /usr/bin/gcc-ar "/usr/bin/x86_64-linux-gnu-gcc-ar-${version}" || return $?
-        $MV_CMD -f /usr/bin/gcc-nm "/usr/bin/x86_64-linux-gnu-gcc-nm-${version}" || return $?
-        $MV_CMD -f /usr/bin/gcc-ranlib "/usr/bin/x86_64-linux-gnu-gcc-ranlib-${version}" || return $?
-        $MV_CMD -f /usr/bin/gcov "/usr/bin/x86_64-linux-gnu-gcov-${version}" || return $?
-        $MV_CMD -f /usr/bin/gcov-dump "/usr/bin/x86_64-linux-gnu-gcov-dump-${version}" || return $?
-        $MV_CMD -f /usr/bin/gcov-tool "/usr/bin/x86_64-linux-gnu-gcov-tool-${version}" || return $?
-        $MV_CMD -f /usr/bin/lto-dump "/usr/bin/x86_64-linux-gnu-lto-dump-${version}" || return $?
+        command -v /usr/bin/cpp >/dev/null && $CP_CMD -a /usr/bin/cpp "/usr/bin/x86_64-linux-gnu-cpp-${version}" || return $?
+        command -v /usr/bin/gcc >/dev/null && $CP_CMD -a /usr/bin/gcc "/usr/bin/x86_64-linux-gnu-gcc-${version}" || return $?
+        command -v /usr/bin/gcc-ar >/dev/null && $CP_CMD -a /usr/bin/gcc-ar "/usr/bin/x86_64-linux-gnu-gcc-ar-${version}" || return $?
+        command -v /usr/bin/gcc-nm >/dev/null && $CP_CMD -a /usr/bin/gcc-nm "/usr/bin/x86_64-linux-gnu-gcc-nm-${version}" || return $?
+        command -v /usr/bin/gcc-ranlib >/dev/null && $CP_CMD -a /usr/bin/gcc-ranlib "/usr/bin/x86_64-linux-gnu-gcc-ranlib-${version}" || return $?
+        command -v /usr/bin/gcov >/dev/null && $CP_CMD -a /usr/bin/gcov "/usr/bin/x86_64-linux-gnu-gcov-${version}" || return $?
+        command -v /usr/bin/gcov-dump >/dev/null && $CP_CMD -a /usr/bin/gcov-dump "/usr/bin/x86_64-linux-gnu-gcov-dump-${version}" || return $?
+        command -v /usr/bin/gcov-tool >/dev/null && $CP_CMD -a /usr/bin/gcov-tool "/usr/bin/x86_64-linux-gnu-gcov-tool-${version}" || return $?
+        command -v /usr/bin/lto-dump >/dev/null && $CP_CMD -a /usr/bin/lto-dump "/usr/bin/x86_64-linux-gnu-lto-dump-${version}" || return $?
 
         $LN_CMD -sf x86_64-linux-gnu-cpp /usr/bin/cpp || return $?
         $LN_CMD -sf x86_64-linux-gnu-gcc /usr/bin/gcc || return $?
@@ -129,21 +157,21 @@ default-gcc-alternative ()
         $RM_CMD -f /usr/bin/x86_64-linux-gnu-gcov-tool || return $?
         $RM_CMD -f /usr/bin/x86_64-linux-gnu-lto-dump || return $?
 
-        $MV_CMD -f /usr/share/man/man1/cpp.1.gz "/usr/share/man/man1/x86_64-linux-gnu-cpp-${version}.1.gz" || return $?
-        $MV_CMD -f /usr/share/man/man1/gcc.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcc-${version}.1.gz" || return $?
-        $MV_CMD -f /usr/share/man/man1/gcc-ar.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcc-ar-${version}.1.gz" || return $?
-        $MV_CMD -f /usr/share/man/man1/gcc-nm.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcc-nm-${version}.1.gz" || return $?
-        $MV_CMD -f /usr/share/man/man1/gcc-ranlib.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcc-ranlib-${version}.1.gz" || return $?
-        $MV_CMD -f /usr/share/man/man1/gcov.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcov-${version}.1.gz" || return $?
-        $MV_CMD -f /usr/share/man/man1/gcov-dump.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcov-dump-${version}.1.gz" || return $?
-        $MV_CMD -f /usr/share/man/man1/gcov-tool.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcov-tool-${version}.1.gz" || return $?
-        $MV_CMD -f /usr/share/man/man1/lto-dump.1.gz "/usr/share/man/man1/x86_64-linux-gnu-lto-dump-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/cpp.1.gz && $CP_CMD -a /usr/share/man/man1/cpp.1.gz "/usr/share/man/man1/x86_64-linux-gnu-cpp-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/gcc.1.gz && $CP_CMD -a /usr/share/man/man1/gcc.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcc-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/ar.1.gz && $CP_CMD -a /usr/share/man/man1/ar.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcc-ar-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/nm.1.gz && $CP_CMD -a /usr/share/man/man1/nm.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcc-nm-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/ranlib.1.gz && $CP_CMD -a /usr/share/man/man1/ranlib.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcc-ranlib-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/gcov.1.gz && $CP_CMD -a /usr/share/man/man1/gcov.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcov-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/gcov-dump.1.gz && $CP_CMD -a /usr/share/man/man1/gcov-dump.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcov-dump-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/gcov-tool.1.gz && $CP_CMD -a /usr/share/man/man1/gcov-tool.1.gz "/usr/share/man/man1/x86_64-linux-gnu-gcov-tool-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/lto-dump.1.gz && $CP_CMD -a /usr/share/man/man1/lto-dump.1.gz "/usr/share/man/man1/x86_64-linux-gnu-lto-dump-${version}.1.gz" || return $?
 
         $LN_CMD -sf x86_64-linux-gnu-cpp.1.gz /usr/share/man/man1/cpp.1.gz || return $?
         $LN_CMD -sf x86_64-linux-gnu-gcc.1.gz /usr/share/man/man1/gcc.1.gz || return $?
-        $LN_CMD -sf x86_64-linux-gnu-gcc-ar.1.gz /usr/share/man/man1/gcc-ar.1.gz || return $?
-        $LN_CMD -sf x86_64-linux-gnu-gcc-nm.1.gz /usr/share/man/man1/gcc-nm.1.gz || return $?
-        $LN_CMD -sf x86_64-linux-gnu-gcc-ranlib.1.gz /usr/share/man/man1/gcc-ranlib.1.gz || return $?
+        $LN_CMD -sf x86_64-linux-gnu-gcc-ar.1.gz /usr/share/man/man1/ar.1.gz || return $?
+        $LN_CMD -sf x86_64-linux-gnu-gcc-nm.1.gz /usr/share/man/man1/nm.1.gz || return $?
+        $LN_CMD -sf x86_64-linux-gnu-gcc-ranlib.1.gz /usr/share/man/man1/ranlib.1.gz || return $?
         $LN_CMD -sf x86_64-linux-gnu-gcov.1.gz /usr/share/man/man1/gcov.1.gz || return $?
         $LN_CMD -sf x86_64-linux-gnu-gcov-dump.1.gz /usr/share/man/man1/gcov-dump.1.gz || return $?
         $LN_CMD -sf x86_64-linux-gnu-gcov-tool.1.gz /usr/share/man/man1/gcov-tool.1.gz || return $?
@@ -160,7 +188,27 @@ default-gcc-alternative ()
         $RM_CMD -f /usr/share/man/man1/x86_64-linux-gnu-lto-dump.1.gz || return $?
     fi
 
-    gcc-alternative "$version"
+    # NB: The default gcc distribution has man pages for gcc-ar, gcc-nm and gcc-ranlib which are missing in the older gcc distributions.
+    $UPDATE_ALTERNATIVES_CMD                                                                                                                    \
+        --install  /usr/bin/x86_64-linux-gnu-gcc              gcc          /usr/bin/x86_64-linux-gnu-gcc-"${version}"            "$version"     \
+        --follower /usr/bin/x86_64-linux-gnu-cpp              cpp          /usr/bin/x86_64-linux-gnu-cpp-"${version}"                           \
+        --follower /usr/bin/x86_64-linux-gnu-gcc-ar           gcc-ar       /usr/bin/x86_64-linux-gnu-gcc-ar-"${version}"                        \
+        --follower /usr/bin/x86_64-linux-gnu-gcc-nm           gcc-nm       /usr/bin/x86_64-linux-gnu-gcc-nm-"${version}"                        \
+        --follower /usr/bin/x86_64-linux-gnu-gcc-ranlib       gcc-ranlib   /usr/bin/x86_64-linux-gnu-gcc-ranlib-"${version}"                    \
+        --follower /usr/bin/x86_64-linux-gnu-gcov             gcov         /usr/bin/x86_64-linux-gnu-gcov-"${version}"                          \
+        --follower /usr/bin/x86_64-linux-gnu-gcov-dump        gcov-dump    /usr/bin/x86_64-linux-gnu-gcov-dump-"${version}"                     \
+        --follower /usr/bin/x86_64-linux-gnu-gcov-tool        gcov-tool    /usr/bin/x86_64-linux-gnu-gcov-tool-"${version}"                     \
+        --follower /usr/bin/x86_64-linux-gnu-lto-dump         lto-dump     /usr/bin/x86_64-linux-gnu-lto-dump-"${version}"                      \
+                                                                                                                                                \
+        --follower  /usr/bin/x86_64-linux-gnu-gcc.1.gz        gcc.1        /usr/bin/x86_64-linux-gnu-gcc-"${version}.1.gz"                      \
+        --follower /usr/bin/x86_64-linux-gnu-cpp.1.gz         cpp.1        /usr/bin/x86_64-linux-gnu-cpp-"${version}.1.gz"                      \
+        --follower /usr/bin/x86_64-linux-gnu-gcc-ar.1.gz      gcc-ar.1     /usr/bin/x86_64-linux-gnu-gcc-ar-"${version}.1.gz"                   \
+        --follower /usr/bin/x86_64-linux-gnu-gcc-nm.1.gz      gcc-nm.1     /usr/bin/x86_64-linux-gnu-gcc-nm-"${version}.1.gz"                   \
+        --follower /usr/bin/x86_64-linux-gnu-gcc-ranlib.1.gz  gcc-ranlib.1 /usr/bin/x86_64-linux-gnu-gcc-ranlib-"${version}.1.gz"               \
+        --follower /usr/bin/x86_64-linux-gnu-gcov.1.gz        gcov.1       /usr/bin/x86_64-linux-gnu-gcov-"${version}.1.gz"                     \
+        --follower /usr/bin/x86_64-linux-gnu-gcov-dump.1.gz   gcov-dump.1  /usr/bin/x86_64-linux-gnu-gcov-dump-"${version}.1.gz"                \
+        --follower /usr/bin/x86_64-linux-gnu-gcov-tool.1.gz   gcov-tool.1  /usr/bin/x86_64-linux-gnu-gcov-tool-"${version}.1.gz"                \
+        --follower /usr/bin/x86_64-linux-gnu-lto-dump.1.gz    lto-dump.1   /usr/bin/x86_64-linux-gnu-lto-dump-"${version}.1.gz"
 }
 
 gpp-alternative ()
@@ -168,15 +216,15 @@ gpp-alternative ()
     local version=$1
 
     if test -f "/usr/bin/g++-${version}"; then
-        $MV_CMD -f "/usr/bin/g++-${version}" "/usr/bin/x86_64-linux-gnu-g++-${version}" || return $?
+        command -v "/usr/bin/g++-${version}" >/dev/null && $CP_CMD -a "/usr/bin/g++-${version}" "/usr/bin/x86_64-linux-gnu-g++-${version}" || return $?
 
-        $MV_CMD -f "/usr/share/man/man1/g++-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-g++-${version}.1.gz" || return $?
+        test -f "/usr/share/man/man1/g++-${version}.1.gz" && $CP_CMD -a "/usr/share/man/man1/g++-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-g++-${version}.1.gz" || return $?
     fi
 
     $UPDATE_ALTERNATIVES_CMD                                                                                                            \
         --install  /usr/bin/x86_64-linux-gnu-g++                  g++    /usr/bin/x86_64-linux-gnu-g++-"${version}"         "$version"  \
                                                                                                                                         \
-        --install  /usr/share/man/man1/x86_64-linux-gnu-g++.1.gz  g++.1  /usr/share/man/man1/x86_64-linux-gnu-g++-"${version}.1.gz"
+        --follower  /usr/share/man/man1/x86_64-linux-gnu-g++.1.gz  g++.1  /usr/share/man/man1/x86_64-linux-gnu-g++-"${version}.1.gz"
 }
 
 default-gpp-alternative ()
@@ -184,11 +232,11 @@ default-gpp-alternative ()
     local version=$1
 
     if test -f /usr/bin/g++ -a ! -h /usr/bin/g++; then
-        $MV_CMD -f /usr/bin/g++ "/usr/bin/x86_64-linux-gnu-g++-${version}" || return $?
+        command -v /usr/bin/g++ >/dev/null && $CP_CMD -a /usr/bin/g++ "/usr/bin/x86_64-linux-gnu-g++-${version}" || return $?
         $LN_CMD -sf x86_64-linux-gnu-g++ /usr/bin/g++ || return $?
         $RM_CMD -f x86_64-linux-gnu-g++ || return $?
 
-        $MV_CMD -f /usr/share/man/man1/g++.1.gz "/usr/share/man/man1/x86_64-linux-gnu-g++-${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/g++.1.gz && $CP_CMD -a /usr/share/man/man1/g++.1.gz "/usr/share/man/man1/x86_64-linux-gnu-g++-${version}.1.gz" || return $?
         $LN_CMD -sf x86_64-linux-gnu-g++.1.gz /usr/share/man/man1/g++.1.gz || return $?
         $RM_CMD -f /usr/share/man/man1/x86_64-linux-gnu-g++.1.gz || return $?
     fi
@@ -201,15 +249,15 @@ gfortran-alternative ()
     local version=$1
 
     if test -f "/usr/bin/gfortran-${version}"; then
-        $MV_CMD -f "/usr/bin/gfortran-${version}" "/usr/bin/x86_64-linux-gnu-gfortran-${version}" || return $?
+        command -v "/usr/bin/gfortran-${version}" >/dev/null && $CP_CMD -a "/usr/bin/gfortran-${version}" "/usr/bin/x86_64-linux-gnu-gfortran-${version}" || return $?
 
-        $MV_CMD -f "/usr/share/man/man1/gfortran-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gfortran-${version}.1.gz" || return $?
+        test -f "/usr/share/man/man1/gfortran-${version}.1.gz" && $CP_CMD -a "/usr/share/man/man1/gfortran-${version}.1.gz" "/usr/share/man/man1/x86_64-linux-gnu-gfortran-${version}.1.gz" || return $?
     fi
 
     $UPDATE_ALTERNATIVES_CMD                                                                                                                                    \
         --install  /usr/bin/x86_64-linux-gnu-gfortran                  gfortran    /usr/bin/x86_64-linux-gnu-gfortran-"${version}"                "$version"    \
                                                                                                                                                                 \
-        --install  /usr/share/man/man1/x86_64-linux-gnu-gfortran.1.gz  gfortran.1  /usr/share/man/man1/x86_64-linux-gnu-gfortran-"${version}.1.gz"
+        --follower  /usr/share/man/man1/x86_64-linux-gnu-gfortran.1.gz  gfortran.1  /usr/share/man/man1/x86_64-linux-gnu-gfortran-"${version}.1.gz"
 }
 
 default-gfortran-alternative ()
@@ -217,11 +265,11 @@ default-gfortran-alternative ()
     local version=$1
 
     if test -f /usr/bin/gfortran -a ! -h /usr/bin/gfortran; then
-        $MV_CMD -f /usr/bin/gfortran  /usr/bin/x86_64-linux-gnu-gfortran-"${version}" || return $?
+        command -v /usr/bin/gfortran >/dev/null && $CP_CMD -a /usr/bin/gfortran  /usr/bin/x86_64-linux-gnu-gfortran-"${version}" || return $?
         $LN_CMD -sf x86_64-linux-gnu-gfortran /usr/bin/gfortran || return $?
         $RM_CMD -f x86_64-linux-gnu-gfortran
 
-        $MV_CMD -f /usr/share/man/man1/gfortran.1.gz  /usr/share/man/man1/x86_64-linux-gnu-gfortran-"${version}.1.gz" || return $?
+        test -f /usr/share/man/man1/gfortran.1.gz && $CP_CMD -a /usr/share/man/man1/gfortran.1.gz  /usr/share/man/man1/x86_64-linux-gnu-gfortran-"${version}.1.gz" || return $?
         $LN_CMD -sf x86_64-linux-gnu-gfortran.1.gz /usr/share/man/man1/gfortran.1.gz || return $?
         $RM_CMD -f /usr/share/man/man1/x86_64-linux-gnu-gfortran.1.gz
     fi
@@ -230,6 +278,7 @@ default-gfortran-alternative ()
 }
 
 if test ."$0" = ."${BASH_SOURCE[0]}"; then
+set -x
     if (( EUID != 0 )); then
         echo "${0##*/}: This script must be run by user root."
         exit 1
